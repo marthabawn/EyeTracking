@@ -158,16 +158,16 @@ def add_descriptive_cols(df):
 if __name__ == '__main__':
     for subjid in range(101, 123):
     	for section in ['practice', 'setA', 'setB']:
-		    files = get_files(section)
+		files = get_files(section)
+		
+		gazefile = files[0]
+		pupilfile = files[1]
+		blinkfile = files[2]
 
-		    gazefile = files[0]
-		    pupilfile = files[1]
-		    blinkfile = files[2]
+		df = combine(gazefile, pupilfile, blinkfile)
+		df = format(df)
+		df = add_descriptive_cols(df)
 
-		    df = combine(gazefile, pupilfile, blinkfile)
-		    df = format(df)
-		    df = add_descriptive_cols(df)
-
-		    df.to_csv(os.path.join(filepath, 'rt' + str(subjid) + '_' + section + '_transinf_gazedata_test.csv'))
-		    print str(subjid) + section + ' file created'
+		df.to_csv(os.path.join(filepath, 'rt' + str(subjid) + '_' + section + '_transinf_gazedata_test.csv'))
+		print str(subjid) + section + ' file created'
 
