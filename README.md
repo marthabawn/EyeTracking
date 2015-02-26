@@ -8,4 +8,6 @@
 
 - ogama_formatting_new.py is the same as above, except it reads data directly from txt files instead of xlsx. Still slow - use cluster
 
--ogama_formatting_final.py is the final script with all known bugs fixed. The files it produces shouls have no problem being uploaded into Ogama correctly.
+- transinf_ogama.py is the final script with all known bugs fixed. The files it produces shouls have no problem being uploaded into Ogama correctly.
+
+- matrices_ogama.py creates pandas dataframe from txt files, formats it for Ogama, and saves it to a csv file.
