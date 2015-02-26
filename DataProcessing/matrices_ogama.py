@@ -112,6 +112,9 @@ def add_descriptive_cols(df):
             df['blink(x)'].iloc[i] += 640
             df['blink(y)'].iloc[i] *= -1
             df['blink(y)'].iloc[i] += 512
+            
+        #trial index should start at 1, not 0
+        df['trial_index'].iloc[i] = df['trial_index'].iloc[i] + 1
 
     print ("add_descriptive_cols completed in %s seconds" %str(time.time() - start_time))
 
