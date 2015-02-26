@@ -5,7 +5,7 @@ import time
 #subjid = 111
 #section = 'A'
 
-filepath = r'C:\Users\bungelab\Desktop\ReasoningTraining-EyeTracking\DataBackup\Matrices_data'
+filepath = '/home/bunge/bguerra/EyeTracking/RPP/transinf/'
 
 def get_files(subjid, section):
     start_time = time.time()
