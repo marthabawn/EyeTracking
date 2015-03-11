@@ -12,7 +12,6 @@ with open("Dictionaries/trans_setA_list.txt", 'r') as setA_list:
         (key, val) = line.split()
         dict_setA[int (key)] = val
 setA_list.close()
-print dict_setA
 
 dict_setB = {}
 with open("Dictionaries/trans_setB_list.txt", 'r') as setB_list:
@@ -20,7 +19,6 @@ with open("Dictionaries/trans_setB_list.txt", 'r') as setB_list:
         (key, val) = line.split()
         dict_setB[int (key)] = val
 setB_list.close()
-print dict_setB
 
 def map_trial_to_condition(row):
     if row[2] == 'practice':
@@ -53,7 +51,8 @@ for f in glob.glob("TransInf/*behavioralout.txt"):
 
     with open(f, 'r') as csvfile:
 
-        dfTemp = pd.read_csv(csvfile, delimiter='\t', header=None, names=['Trial', 'Infer', 'CorrectAnswer', 'SubjectResponse', 'ProbRel', 'RT', 'RT_Unc'] )
+        dfTemp = pd.read_csv(csvfile, delimiter='\t', header=None, names=['Trial', 'Infer', 'CorrectAnswer',
+                                                                          'SubjectResponse', 'ProbRel', 'RT', 'RT_Unc'])
 
         if len(dfTemp) == 0:
             continue
@@ -69,17 +68,39 @@ for f in glob.glob("TransInf/*behavioralout.txt"):
         df = df.append(dfTemp, ignore_index=True)
 
 
+tuples = list(zip(df['PID'].tolist(), df['Trial'].tolist()))
+#df.index = tuples
+df.insert(0, 'PID_Trial', tuples)
+df.drop('PID', axis=1, inplace=True)
+df.drop('Trial', axis=1, inplace=True)
+
+
 gaze_stats = pd.read_csv('Gaze_Stats/RPPtransinf_gaze_statistics.txt', delimiter='\t', header=None)
-gaze_stats.columns = ['PID', 'Comments', 'Trial', 'ConditionNumber','Duration','Fix/Saccade Ratio','TimeToTarget','FixationsInTarget', 'TotalFixTimeInTarget','TimeToNontarget', 'FixationsInNontarget', 'TotalFixTimeInNontarget', 'FixationsInQuestion','TotalFixTimeInQuestion','extra']
+gaze_stats.columns = ['PID', 'Comments', 'Trial', 'ConditionNumber','Duration','Fix/Saccade Ratio','TimeToTarget',
+                      'FixationsInTarget', 'TotalFixTimeInTarget','TimeToNontarget', 'FixationsInNontarget',
+                      'TotalFixTimeInNontarget', 'FixationsInQuestion','TotalFixTimeInQuestion','extra']
+
 
 gaze_stats = gaze_stats.dropna(how='all')
 gaze_stats = gaze_stats.dropna(axis=1,how='all')
 gaze_stats = gaze_stats.drop(gaze_stats.index[0])
 
-print df
-print gaze_stats
+tuples2 = list(zip(gaze_stats['PID'].tolist(), gaze_stats['Trial'].tolist()))
+#gaze_stats.index = tuples2
+gaze_stats.insert(0, 'PID_Trial', tuples2)
+gaze_stats.drop('PID', axis=1, inplace=True)
+gaze_stats.drop('Trial', axis=1, inplace=True)
 
-new_df = pd.merge(df, gaze_stats, how='outer')
-print new_df
 
-#new_df.to_csv('Gaze_Stats/RPPtransinf_behavioral_gaze_statistics.csv')
+new_df =pd.merge(df, gaze_stats, on='PID_Trial', how='outer', sort=False)
+#new_df.drop('Trial_y', axis=1, inplace=True)
+column_order = ['PID_Trial', 'Comments', 'Block', 'Condition', 'Infer', 'CorrectAnswer', 'SubjectResponse',
+                'ProbRel', 'RT', 'RT_Unc', 'Accuracy', 'Duration', 'Fix/Saccade Ratio', 'TimeToTarget',
+                'FixationsInTarget', 'TotalFixTimeInTarget', 'TimeToNontarget', 'FixationsInNontarget',
+                'TotalFixTimeInNontarget', 'FixationsInQuestion', 'TotalFixTimeInQuestion']
+#new_df = new_df[column_order]
+#new_df = new_df.rename(columns={'Trial_x':'Trial'})
+
+print new_df.columns
+
+new_df.to_csv('Gaze_Stats/RPPtransinf_behavioral_gaze_statistics.csv')
