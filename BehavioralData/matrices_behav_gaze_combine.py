@@ -37,7 +37,7 @@ def map_trial_to_condition(row):
 dfm = pd.DataFrame()
 
 #It's easier to separete the files from subject 1-10 into a separate folder
-for f in glob.glob("Matrices_Behav/*behavioralout.txt"):
+for f in glob.glob("Matrices_Behav_Data/*behavioralout.txt"):
     filename = os.path.basename(f)
     filename_parts = filename.split('_')
     if filename_parts[2] == 'practice':
@@ -73,7 +73,7 @@ dfm = dfm.reset_index()
 dfm = dfm.drop('index', axis=1)
 
 ### Create dataframe gaze_stats from gaze data
-gaze_stats = pd.read_csv('Gaze_Stats/RPPmatrices_gaze_statistics11-22.txt', delimiter='\t', header=None)
+gaze_stats = pd.read_csv('Gaze_Stats/RPPmatrices_gaze_statistics10-22.txt', delimiter='\t', header=None)
 gaze_stats.columns = ['PID', 'Comments', 'Trial', 'ConditionNumber', 'Duration', 'Fix/SaccadeRatio',
                       'FixationsInProblem', 'TimeToProblem', 'TotalFixTimeInProblem', 'FixationsInAnswers',
                       'TimeToAnswers', 'TotalFixTimeInAnswers', 'extra']
