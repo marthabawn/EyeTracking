@@ -32,8 +32,9 @@ def map_trial_to_condition(row):
             return dict_setB[row[3]]
 
 
-	return 'N/A'
+    return 'N/A'
 
+### Create dataframe pd from behavioral data
 df = pd.DataFrame()
 
 #Reads all the _behavioral files in the folder specified
@@ -67,28 +68,45 @@ for f in glob.glob("TransInf/*behavioralout.txt"):
 
         df = df.append(dfTemp, ignore_index=True)
 
-#print df
+df = df.sort(['PID', 'Trial'])
+df = df.reset_index()
+df = df.drop('index', axis=1)
 
+### Create dataframe gaze_stats from gaze data
 gaze_stats = pd.read_csv('Gaze_Stats/RPPtransinf_gaze_statistics.txt', delimiter='\t', header=None)
 gaze_stats.columns = ['PID', 'Comments', 'Trial', 'ConditionNumber','Duration','Fix/Saccade Ratio','TimeToTarget',
                       'FixationsInTarget', 'TotalFixTimeInTarget','TimeToNontarget', 'FixationsInNontarget',
                       'TotalFixTimeInNontarget', 'FixationsInQuestion','TotalFixTimeInQuestion','extra']
 
 
-gaze_stats = gaze_stats.dropna(how='all')   # Ogama adds empty an column and row to the end
+gaze_stats = gaze_stats.dropna(how='all')   # Ogama adds an empty column and row to the end
 gaze_stats = gaze_stats.dropna(axis=1,how='all')
 gaze_stats = gaze_stats.drop(gaze_stats.index[0])   # these are the Ogama labels, which are really long
+gaze_stats = gaze_stats.reset_index()
+gaze_stats['Trial'] = gaze_stats['Trial'].astype(int)
 
-#print gaze_stats
-print df.index.intersection(gaze_stats.index)
-
-new_df = pd.merge(df, gaze_stats, how='inner', sort=False)
-print new_df
+### Create dataframe new_df with all data
+new_df = df.merge(gaze_stats, how='outer', sort=False)
 column_order = ['PID', 'Comments', 'Block', 'Trial', 'Condition', 'Infer', 'CorrectAnswer', 'SubjectResponse',
-                'ProbRel', 'RT', 'RT_Unc', 'Accuracy', 'Duration', 'Fix/Saccade Ratio', 'TimeToTarget',
+                'Accuracy', 'ProbRel', 'RT', 'RT_Unc', 'Duration', 'Fix/Saccade Ratio', 'TimeToTarget',
                 'FixationsInTarget', 'TotalFixTimeInTarget', 'TimeToNontarget', 'FixationsInNontarget',
                 'TotalFixTimeInNontarget', 'FixationsInQuestion', 'TotalFixTimeInQuestion']
 new_df = new_df[column_order]
 
+#remove block name from PID
+for i in range(len(new_df['PID'])):
+    new_df['PID'][i] = new_df['PID'][i][0:5]
+
+#allow for different sequence for rt101
+rt101_conditions = ['IneqEq2', 'IneqEq1', 'IneqIneq1', 'IneqEq2', 'IneqIneq1', 'IneqIneq2', 'IneqIneq0', 'IneqIneq1',
+                    'IneqIneq0', 'IneqEq0', 'IneqEq1', 'IneqEq0', 'IneqIneq0', 'IneqEq2', 'IneqEq2', 'IneqIneq2',
+                    'IneqEq2', 'IneqIneq0', 'IneqIneq0', 'IneqIneq2', 'IneqIneq2', 'IneqEq1', 'IneqIneq1', 'IneqEq0',
+                    'IneqEq0', 'IneqIneq2', 'IneqEq0', 'IneqEq0', 'IneqIneq0', 'IneqIneq2', 'IneqEq2', 'IneqEq2',
+                    'IneqIneq1', 'IneqEq1', 'IneqEq1', 'IneqIneq2', 'IneqEq1', 'IneqIneq1', 'IneqEq2', 'IneqIneq2',
+                    'IneqEq1', 'IneqIneq1', 'IneqEq2', 'IneqIneq0', 'IneqEq0', 'IneqIneq2', 'IneqEq1', 'IneqIneq0',
+                    'IneqIneq2', 'IneqEq1', 'IneqIneq1', 'IneqEq2', 'IneqEq1', 'IneqEq0', 'IneqEq0', 'IneqIneq1',
+                    'IneqIneq0', 'IneqIneq0', 'IneqEq0', 'IneqIneq1']
+if new_df['PID'][0] == 'rt101':
+    new_df['Condition'][0:60] = rt101_conditions
 
 new_df.to_csv('Gaze_Stats/RPPtransinf_behavioral_gaze_statistics.csv')
