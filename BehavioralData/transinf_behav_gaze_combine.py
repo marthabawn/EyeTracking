@@ -109,4 +109,5 @@ rt101_conditions = ['IneqEq2', 'IneqEq1', 'IneqIneq1', 'IneqEq2', 'IneqIneq1', '
 if new_df['PID'][0] == 'rt101':
     new_df['Condition'][0:60] = rt101_conditions
 
+#save to file for future use
 new_df.to_csv('All_Stats/RPPtransinf_behavioral_gaze_statistics.csv')
