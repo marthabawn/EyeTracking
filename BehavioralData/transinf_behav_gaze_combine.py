@@ -38,7 +38,7 @@ def map_trial_to_condition(row):
 df = pd.DataFrame()
 
 #Reads all the _behavioral files in the folder specified
-for f in glob.glob("TransInf/*behavioralout.txt"):
+for f in glob.glob("TransInf_Behav/*behavioralout.txt"):
     filename = os.path.basename(f)
     filename_parts = filename.split('_')
     if filename_parts[2] == 'practice':
@@ -74,7 +74,7 @@ df = df.drop('index', axis=1)
 
 ### Create dataframe gaze_stats from gaze data
 gaze_stats = pd.read_csv('Gaze_Stats/RPPtransinf_gaze_statistics.txt', delimiter='\t', header=None)
-gaze_stats.columns = ['PID', 'Comments', 'Trial', 'ConditionNumber','Duration','Fix/Saccade Ratio','TimeToTarget',
+gaze_stats.columns = ['PID', 'Comments', 'Trial', 'ConditionNumber','Duration','Fix/SaccadeRatio','TimeToTarget',
                       'FixationsInTarget', 'TotalFixTimeInTarget','TimeToNontarget', 'FixationsInNontarget',
                       'TotalFixTimeInNontarget', 'FixationsInQuestion','TotalFixTimeInQuestion','extra']
 
@@ -88,7 +88,7 @@ gaze_stats['Trial'] = gaze_stats['Trial'].astype(int)
 ### Create dataframe new_df with all data
 new_df = df.merge(gaze_stats, how='outer', sort=False)
 column_order = ['PID', 'Comments', 'Block', 'Trial', 'Condition', 'Infer', 'CorrectAnswer', 'SubjectResponse',
-                'Accuracy', 'ProbRel', 'RT', 'RT_Unc', 'Duration', 'Fix/Saccade Ratio', 'TimeToTarget',
+                'Accuracy', 'ProbRel', 'RT', 'RT_Unc', 'Duration', 'Fix/SaccadeRatio', 'TimeToTarget',
                 'FixationsInTarget', 'TotalFixTimeInTarget', 'TimeToNontarget', 'FixationsInNontarget',
                 'TotalFixTimeInNontarget', 'FixationsInQuestion', 'TotalFixTimeInQuestion']
 new_df = new_df[column_order]
@@ -109,4 +109,4 @@ rt101_conditions = ['IneqEq2', 'IneqEq1', 'IneqIneq1', 'IneqEq2', 'IneqIneq1', '
 if new_df['PID'][0] == 'rt101':
     new_df['Condition'][0:60] = rt101_conditions
 
-new_df.to_csv('Gaze_Stats/RPPtransinf_behavioral_gaze_statistics.csv')
+new_df.to_csv('All_Stats/RPPtransinf_behavioral_gaze_statistics.csv')
