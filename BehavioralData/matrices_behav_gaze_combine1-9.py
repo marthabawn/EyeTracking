@@ -16,7 +16,7 @@ dict_setB = {}
 with open("Dictionaries/matrix_setB_list.txt", 'r') as setB_list:
     for line in setB_list:
         (key, val) = line.split()
-        dict_setB[int(key)] = val
+        dict_setB[int (key)] = val
 setB_list.close()
 
 
@@ -36,8 +36,8 @@ def map_trial_to_condition(row):
 
 dfm = pd.DataFrame()
 
-#It's easier to separete the files from subject 1-10 into a separate folder
-for f in glob.glob("Matrices_Behav/*behavioralout.txt"):
+#Read only the files that were missing the columns (rt101-109)
+for f in glob.glob("Matrices_Behav_Data/1-9/*behavioralout.txt"):
     filename = os.path.basename(f)
     filename_parts = filename.split('_')
     if filename_parts[2] == 'practice':
@@ -47,13 +47,13 @@ for f in glob.glob("Matrices_Behav/*behavioralout.txt"):
     block = filename_parts[2]
     group = filename_parts[0][:2]
 
-    print "processing subject:", subject
+    print "processing subject:", subject, block
 
     with open(f, 'r') as csvfile:
 
         dfTemp = pd.read_csv(csvfile, delimiter='\t', header=None,
-                             names=['Trial', 'CorrectAnswer', 'SolutionClicked', 'SubjectResponse', 'RT_Solving',
-                                    'RT_SolvingUnc', 'RT_Response', 'RT_ResponseUnc', 'OrderSolutions'])
+                             names=['Trial', 'CorrectAnswer', 'SubjectResponse', 'RT_Solving', 'RT_SolvingUnc',
+                                    'RT_Response', 'RT_ResponseUnc'])
 
         if len(dfTemp) == 0:
             continue
@@ -73,7 +73,7 @@ dfm = dfm.reset_index()
 dfm = dfm.drop('index', axis=1)
 
 ### Create dataframe gaze_stats from gaze data
-gaze_stats = pd.read_csv('Gaze_Stats/RPPmatrices_gaze_statistics11-22.txt', delimiter='\t', header=None)
+gaze_stats = pd.read_csv('Gaze_Stats/RPPmatrices_gaze_statistics1-9.txt', delimiter='\t', header=None)
 gaze_stats.columns = ['PID', 'Comments', 'Trial', 'ConditionNumber', 'Duration', 'Fix/SaccadeRatio',
                       'FixationsInProblem', 'TimeToProblem', 'TotalFixTimeInProblem', 'FixationsInAnswers',
                       'TimeToAnswers', 'TotalFixTimeInAnswers', 'extra']
@@ -86,9 +86,9 @@ gaze_stats['Trial'] = gaze_stats['Trial'].astype(int)
 
 ### Create dataframe new_df with all data
 new_df = dfm.merge(gaze_stats, how='outer', sort=False)
-column_order = ['PID', 'Comments', 'Block', 'Trial', 'Condition', 'CorrectAnswer', 'SolutionClicked', 'SubjectResponse',
-                'Accuracy', 'RT_Solving', 'RT_SolvingUnc', 'RT_Response', 'RT_ResponseUnc', 'OrderSolutions',
-                'Duration', 'Fix/SaccadeRatio', 'FixationsInProblem', 'TimeToProblem', 'TotalFixTimeInProblem',
+column_order = ['PID', 'Comments', 'Block', 'Trial', 'Condition', 'CorrectAnswer', 'SubjectResponse',
+                'Accuracy', 'RT_Solving', 'RT_SolvingUnc', 'RT_Response', 'RT_ResponseUnc', 'Duration',
+                'Fix/SaccadeRatio', 'FixationsInProblem', 'TimeToProblem', 'TotalFixTimeInProblem',
                 'FixationsInAnswers', 'TimeToAnswers', 'TotalFixTimeInAnswers']
 new_df = new_df[column_order]
 
@@ -96,4 +96,5 @@ new_df = new_df[column_order]
 for i in range(len(new_df['PID'])):
     new_df['PID'][i] = new_df['PID'][i][0:5]
 
-new_df.to_csv('All_Stats/RPPmatrices_behavioral_gaze_statistics10-22.csv')
+new_df.to_csv('All_Stats/RPPmatrices_behavioral_gaze_statistics1-9.csv')
+
