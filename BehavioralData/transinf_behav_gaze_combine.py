@@ -38,7 +38,7 @@ def map_trial_to_condition(row):
 df = pd.DataFrame()
 
 #Reads all the _behavioral files in the folder specified
-for f in glob.glob("TransInf_Behav/*behavioralout.txt"):
+for f in glob.glob("TransInf_Behav_Data/*behavioralout.txt"):
     filename = os.path.basename(f)
     filename_parts = filename.split('_')
     if filename_parts[2] == 'practice':
