@@ -96,4 +96,5 @@ new_df = new_df[column_order]
 for i in range(len(new_df['PID'])):
     new_df['PID'][i] = new_df['PID'][i][0:5]
 
+#save to file for future use
 new_df.to_csv('All_Stats/RPPmatrices_behavioral_gaze_statistics10-22.csv')
