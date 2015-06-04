@@ -3,7 +3,9 @@ import pandas as pd
 import glob
 import os
 
-### Create dictionaries that map trial number to condition
+### Combines Ogama's gaze data with raw behavioral data
+
+# Create dictionaries that map trial number to condition
 dict_practice = {1: 'IneqEq0', 2: 'IneqEq0'}
 
 #You need to text files that have a list of the conditions each trial corresponds to
