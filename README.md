@@ -1,6 +1,6 @@
 # EyeTracking
 
-NOTE: Most up-to-date versions are in Ogama_formatting, Processing, Looking_at_data
+NOTE: As of 6/4, all of the up-to-date versions are in Ogama_formatting, Processing, Looking_at_data
 
 - convert_txt_to_xlsx.py creates new xlsx files from all txt files in the given folder. This is slow - use cluster
 
